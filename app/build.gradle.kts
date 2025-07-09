@@ -65,4 +65,13 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
 
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    implementation(libs.androidx.navigation.compose)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
 }
+
+apply(plugin = "com.google.gms.google-services")
