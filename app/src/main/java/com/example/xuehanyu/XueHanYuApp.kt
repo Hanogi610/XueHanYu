@@ -1,6 +1,9 @@
 package com.example.xuehanyu
 
 import android.app.Application
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 
