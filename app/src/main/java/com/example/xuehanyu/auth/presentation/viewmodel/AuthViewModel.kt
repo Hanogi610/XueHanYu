@@ -3,17 +3,24 @@ package com.example.xuehanyu.auth.presentation.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Firebase
+import androidx.lifecycle.viewModelScope
+import com.example.xuehanyu.auth.domain.usecase.GetLoginStateUseCase
+import com.example.xuehanyu.auth.domain.usecase.SignInUseCase
+import com.example.xuehanyu.auth.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.TwitterAuthProvider
-import com.google.firebase.auth.auth
 
 @HiltViewModel
-class AuthViewModel @Inject constructor() : ViewModel() {
+class AuthViewModel @Inject constructor(
+    private val signInUseCase: SignInUseCase,
+    private val signUpUseCase: SignUpUseCase,
+    private val getLoginStateUseCase: GetLoginStateUseCase
+) : ViewModel() {
+    
     private val _email = mutableStateOf("")
     val email: State<String> = _email
 
@@ -26,7 +33,25 @@ class AuthViewModel @Inject constructor() : ViewModel() {
     private val _loading = mutableStateOf(false)
     val loading: State<Boolean> = _loading
 
-    private val auth: FirebaseAuth by lazy { Firebase.auth }
+    private val _isLoggedIn = MutableStateFlow(false)
+    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn.asStateFlow()
+
+    private val _isInitializing = MutableStateFlow(true)
+    val isInitializing: StateFlow<Boolean> = _isInitializing.asStateFlow()
+
+    init {
+        observeLoginState()
+    }
+
+    private fun observeLoginState() {
+        viewModelScope.launch {
+            getLoginStateUseCase().collect { isLoggedIn ->
+                _isLoggedIn.value = isLoggedIn
+                _isInitializing.value = false
+            }
+        }
+    }
+
     fun onEmailChange(newEmail: String) {
         _email.value = newEmail
     }
@@ -40,16 +65,20 @@ class AuthViewModel @Inject constructor() : ViewModel() {
             _errorMessage.value = "Email and password must not be empty."
             return
         }
+        
+        viewModelScope.launch {
         _loading.value = true
-        auth.createUserWithEmailAndPassword(_email.value, _password.value)
-            .addOnCompleteListener { task ->
-                _loading.value = false
-                if (task.isSuccessful) {
+            _errorMessage.value = null
+            
+            val result = signUpUseCase(_email.value, _password.value)
+            
+            if (result.isSuccess) {
                     _errorMessage.value = null
-                    // User is signed up and logged in
                 } else {
-                    _errorMessage.value = task.exception?.localizedMessage ?: "Sign up failed."
+                _errorMessage.value = result.exceptionOrNull()?.localizedMessage ?: "Sign up failed."
                 }
+            
+            _loading.value = false
             }
     }
 
@@ -58,16 +87,20 @@ class AuthViewModel @Inject constructor() : ViewModel() {
             _errorMessage.value = "Email and password must not be empty."
             return
         }
+        
+        viewModelScope.launch {
         _loading.value = true
-        auth.signInWithEmailAndPassword(_email.value, _password.value)
-            .addOnCompleteListener { task ->
-                _loading.value = false
-                if (task.isSuccessful) {
+            _errorMessage.value = null
+            
+            val result = signInUseCase(_email.value, _password.value)
+            
+            if (result.isSuccess) {
                     _errorMessage.value = null
-                    // User is logged in
                 } else {
-                    _errorMessage.value = task.exception?.localizedMessage ?: "Login failed."
+                _errorMessage.value = result.exceptionOrNull()?.localizedMessage ?: "Login failed."
                 }
+            
+            _loading.value = false
             }
     }
 

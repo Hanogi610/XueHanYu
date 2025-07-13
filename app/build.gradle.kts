@@ -72,6 +72,14 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("com.google.android.gms:play-services-auth:20.5.0")
+    
+    // DataStore for persistent storage
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    
+    // Room database
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 }
 
 apply(plugin = "com.google.gms.google-services")
