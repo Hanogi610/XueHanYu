@@ -19,13 +19,16 @@ import com.example.xuehanyu.dictionary.presentation.DictionaryScreen
 import com.example.xuehanyu.menu.presentation.MenuScreen
 import com.example.xuehanyu.main.presentation.viewmodel.MainViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.xuehanyu.core.navigation.AppRoutes
 
 @Composable
 fun MainScreen(
     onLogout: () -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mainNav : NavController
 ) {
     val navController = rememberNavController()
     val mainViewModel: MainViewModel = hiltViewModel()
@@ -53,7 +56,9 @@ fun MainScreen(
                 startDestination = MainBottomNavItem.Home.route
             ) {
                 composable(MainBottomNavItem.Home.route) {
-                    HomeScreen()
+                    HomeScreen(onItemClick = {materialId ->
+                        mainNav.navigate(AppRoutes.createDetailRoute(materialId))
+                    })
                 }
                 composable(MainBottomNavItem.Discover.route) {
                     DiscoverScreen()

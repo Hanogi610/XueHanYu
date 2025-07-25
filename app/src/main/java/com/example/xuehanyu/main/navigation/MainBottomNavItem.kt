@@ -13,31 +13,31 @@ sealed class MainBottomNavItem(
     val title: String,
     val icon: ImageVector
 ) {
-    object Home : MainBottomNavItem(
+    data object Home : MainBottomNavItem(
         route = "home",
         title = "Home",
         icon = Icons.Default.Home
     )
     
-    object Discover : MainBottomNavItem(
+    data object Discover : MainBottomNavItem(
         route = "discover",
         title = "Discover",
         icon = Icons.Default.Search
     )
     
-    object Flashcard : MainBottomNavItem(
+    data object Flashcard : MainBottomNavItem(
         route = "flashcard",
         title = "Flashcard",
         icon = Icons.Default.Style
     )
     
-    object Dictionary : MainBottomNavItem(
+    data object Dictionary : MainBottomNavItem(
         route = "dictionary",
         title = "Dictionary",
         icon = Icons.Default.MenuBook
     )
     
-    object Menu : MainBottomNavItem(
+    data object Menu : MainBottomNavItem(
         route = "menu",
         title = "Menu",
         icon = Icons.Default.Menu

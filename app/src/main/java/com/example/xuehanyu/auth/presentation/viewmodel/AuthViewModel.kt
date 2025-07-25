@@ -4,9 +4,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.xuehanyu.auth.domain.usecase.GetLoginSkippedUseCase
+import com.example.xuehanyu.auth.domain.usecase.SkipLoginUseCase
 import com.example.xuehanyu.auth.domain.usecase.GetLoginStateUseCase
 import com.example.xuehanyu.auth.domain.usecase.SignInUseCase
 import com.example.xuehanyu.auth.domain.usecase.SignUpUseCase
+import com.example.xuehanyu.core.util.SharedPrefHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +21,9 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val signUpUseCase: SignUpUseCase,
-    private val getLoginStateUseCase: GetLoginStateUseCase
+    private val getLoginStateUseCase: GetLoginStateUseCase,
+    private val skipLoginUseCase: SkipLoginUseCase,
+    private val getLoginSkippedUseCase: GetLoginSkippedUseCase
 ) : ViewModel() {
     
     private val _email = mutableStateOf("")
@@ -39,8 +44,12 @@ class AuthViewModel @Inject constructor(
     private val _isInitializing = MutableStateFlow(true)
     val isInitializing: StateFlow<Boolean> = _isInitializing.asStateFlow()
 
+    private val _isLoginSkipped = MutableStateFlow(false)
+    val isLoginSkipped: StateFlow<Boolean> = _isLoginSkipped.asStateFlow()
+
     init {
         observeLoginState()
+        observeLoginSkip()
     }
 
     private fun observeLoginState() {
@@ -107,4 +116,18 @@ class AuthViewModel @Inject constructor(
     fun clearError() {
         _errorMessage.value = null
     }
-} 
+
+    private fun observeLoginSkip(){
+        viewModelScope.launch {
+            getLoginSkippedUseCase().collect { isSkipped ->
+                _isLoginSkipped.value = isSkipped
+            }
+        }
+    }
+
+    fun skipLogin() {
+        viewModelScope.launch {
+            skipLoginUseCase()
+        }
+    }
+}

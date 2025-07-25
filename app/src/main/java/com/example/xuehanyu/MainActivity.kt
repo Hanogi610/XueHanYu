@@ -8,12 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.xuehanyu.core.navigation.AppNavHost
+import com.example.xuehanyu.core.navigation.MainNavHost
 import com.example.xuehanyu.core.theme.XueHanYuTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,34 +22,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             XueHanYuTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize()
-                ) { innerPadding ->
-                    val navController = rememberNavController()
-                    AppNavHost(
+                val navController = rememberNavController()
+                Scaffold {
+                    innerPadding ->
+                    MainNavHost(
                         navController = navController,
                         modifier = Modifier
+                            .fillMaxSize()
                             .padding(innerPadding)
                             .imePadding() // Add IME (keyboard) padding
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    XueHanYuTheme {
-        Greeting("Android")
     }
 }

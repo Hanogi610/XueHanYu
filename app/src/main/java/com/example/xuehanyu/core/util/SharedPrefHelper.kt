@@ -26,6 +26,7 @@ class SharedPrefHelper @Inject constructor(
         private const val KEY_LAST_SEARCH = "last_search"
         private const val KEY_APP_VERSION = "app_version"
         private const val KEY_DICTIONARY_LAST_UPDATE = "dictionary_last_update"
+        private const val KEY_LOGIN_SKIPPED = "login_skipped"
     }
 
     private val sharedPreferences: SharedPreferences by lazy {
@@ -171,6 +172,17 @@ class SharedPrefHelper @Inject constructor(
         }
     }
 
+    fun setLoginSkipped(skipped: Boolean) {
+        Log.d(TAG, "Setting login skipped: $skipped")
+        sharedPreferences.edit {
+            putBoolean(KEY_LOGIN_SKIPPED, skipped)
+        }
+    }
+
+    fun getLoginSkipped(): Boolean {
+        return sharedPreferences.getBoolean(KEY_LOGIN_SKIPPED, false)
+    }
+
     // Utility methods
     fun clearAllPreferences() {
         Log.d(TAG, "Clearing all preferences")
@@ -202,6 +214,7 @@ class SharedPrefHelper @Inject constructor(
         Log.d(TAG, "Last Search: '${getLastSearch()}'")
         Log.d(TAG, "App Version: ${getAppVersion()}")
         Log.d(TAG, "Dictionary Last Update: ${getDictionaryLastUpdate()}")
+        Log.d(TAG, "Login Skipped: ${getLoginSkipped()}")
         Log.d(TAG, "=======================")
     }
-} 
+}

@@ -24,6 +24,7 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     private val isLoggedInKey = booleanPreferencesKey("is_logged_in")
+    private val isLoginSkippedKey = booleanPreferencesKey("is_login_skipped")
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String): Result<Unit> {
         return try {
@@ -61,6 +62,23 @@ class AuthRepositoryImpl @Inject constructor(
     override fun isUserLoggedIn(): Flow<Boolean> {
         return context.dataStore.data.map { preferences ->
             preferences[isLoggedInKey] ?: false
+        }
+    }
+
+    override suspend fun skipLogin() {
+        val isLoginSkipped = sharedPrefHelper.getLoginSkipped()
+        saveSkipLoginState(!isLoginSkipped)
+    }
+
+    override fun isLoginSkipped(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            preferences[isLoginSkippedKey] ?: false
+        }
+    }
+
+    private suspend fun saveSkipLoginState(isSkipped: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[isLoginSkippedKey] = isSkipped
         }
     }
 
