@@ -85,6 +85,8 @@ dependencies {
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    implementation(libs.hanlp)
 }
 
 apply(plugin = "com.google.gms.google-services")
