@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.xuehanyu"
+    namespace = "com.xuehanyu.xuehanyu"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.xuehanyu"
+        applicationId = "com.xuehanyu.xuehanyu"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -88,6 +88,8 @@ dependencies {
 
     //Han Language Processing
     implementation(libs.hanlp)
+
+    implementation(project(":scraper"))
 }
 
 apply(plugin = "com.google.gms.google-services")
